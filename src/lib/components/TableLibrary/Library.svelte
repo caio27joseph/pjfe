@@ -4,7 +4,8 @@
 	import DirActions from './DirActions.svelte';
 	import Directory from './Directory.svelte';
 	import { TreeView, TreeViewItem } from '@skeletonlabs/skeleton';
-	import { groupBy } from 'lodash';
+	import { groupBy } from 'lodash-es';
+
 	// import { NavBarController, activeTab } from '$lib/table/NavBarController';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
