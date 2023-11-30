@@ -3,6 +3,7 @@
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	import TableLeftBar from './TableLeftBar.svelte';
 	import { writable } from 'svelte/store';
+	import Library from '$lib/components/TableLibrary/Library.svelte';
 
 	export let table = {
 		id: '1',
@@ -66,7 +67,7 @@
 				</div>
 			</div>
 			{#each libraries as library}
-				<!-- <Library {table} {library} hidden={library.id !== $selectedLibraryId} /> -->
+				<Library {table} {library} hidden={library.id !== $selectedLibraryId} />
 			{/each}
 		</div>
 	{:else if $page.route.id === '/tables/[tableId]/menu'}
