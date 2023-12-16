@@ -1,0 +1,133 @@
+type Article {
+  id: ID!
+  library: Library!
+  libraryId: ID!
+  name: String!
+  parentId: String
+}
+
+input CreateArticleInput {
+  libraryId: ID!
+  name: String!
+  parentId: String
+}
+
+input CreateDirectoryInput {
+  name: String!
+  parentId: String
+}
+
+input CreateLibraryInput {
+  icon: String
+  name: String!
+  tableId: String!
+}
+
+input CreateTableInput {
+  description: String
+  imageUrl: String
+  title: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Directory {
+  id: String!
+  name: String!
+  parentId: String
+}
+
+input FindLibraryArticles {
+  libraryId: ID!
+}
+
+input FindTableArticles {
+  tableId: ID!
+}
+
+input FindTableLibrariesInput {
+  tableId: ID!
+}
+
+type Library {
+  articles: [Article!]!
+  icon: String
+  id: ID!
+  name: String!
+  root: [Directory!]!
+  table: Table!
+}
+
+type LibraryEvent {
+  created: Library
+  removed: Library
+  updated: Library
+}
+
+type Mutation {
+  addDirectory(input: CreateDirectoryInput!, where: WhereInput!): Library!
+  createArticle(input: CreateArticleInput!): Article!
+  createLibrary(input: CreateLibraryInput!): Library!
+  createTable(input: CreateTableInput!): Table!
+  removeArticle(where: WhereInput!): Article!
+  removeLibrary(where: WhereInput!): Library!
+  removeTable(where: WhereInput!): Table!
+  updateArticle(input: UpdateArticleInput!, where: WhereInput!): Article!
+  updateLibrary(input: UpdateLibraryInput!, where: WhereInput!): Library!
+  updateTable(input: UpdateTableInput!, where: WhereInput!): Table!
+}
+
+type Query {
+  article(where: WhereInput!): Article!
+  findLibrary(where: WhereInput!): Library!
+  findTable(where: WhereInput!): Table!
+  libraryArticles(where: FindLibraryArticles!): [Article!]!
+  myTables: [Table!]!
+  tableArticles(where: FindTableArticles!): [Article!]!
+  tableLibraries(where: FindTableLibrariesInput!): [Library!]!
+  user(id: Int!): User!
+}
+
+type Subscription {
+  libraryEvent: LibraryEvent!
+}
+
+type Table {
+  createdAt: DateTime!
+  description: String
+  id: String!
+  imageUrl: String
+  ownerId: ID!
+  title: String!
+  updatedAt: DateTime!
+}
+
+input UpdateArticleInput {
+  libraryId: ID
+  name: String
+  parentId: String
+}
+
+input UpdateLibraryInput {
+  icon: String
+  name: String
+  tableId: String
+}
+
+input UpdateTableInput {
+  description: String
+  imageUrl: String
+  title: String
+}
+
+type User {
+  id: ID!
+  myTables: [Table!]!
+}
+
+input WhereInput {
+  id: ID!
+}
