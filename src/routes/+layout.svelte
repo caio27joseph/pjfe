@@ -12,7 +12,6 @@
 	export let data;
 </script>
 
-
 <Modal />
 <Drawer />
 

@@ -1,5 +1,13 @@
 import { graphql } from '$houdini';
 import type { ServerLoadEvent } from '@sveltejs/kit';
+import type { SuperValidated, ZodValidation } from 'sveltekit-superforms';
+import { z } from 'zod';
+
+export const createTableSchema = z.object({
+	title: z.string().min(3).max(64).trim(),
+	imageUrl: z.string().min(1).trim().optional()
+});
+export type CreateTableForm = SuperValidated<ZodValidation<typeof createTableSchema>>;
 
 export class TableProvider {
 	constructor(private readonly event: ServerLoadEvent) {}

@@ -17,3 +17,12 @@ export const cleanFormData = (form: FormData) => {
 	Object.keys(data).forEach((key) => data[key] === '' && delete data[key]);
 	return data;
 };
+
+export const isUrl = (value: string | undefined): boolean => {
+	try {
+		new URL(value || '');
+		return true;
+	} catch (error) {
+		return false;
+	}
+};

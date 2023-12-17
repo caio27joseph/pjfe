@@ -11,20 +11,21 @@
 
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { MyTables$result } from '$houdini';
-	// import CreateTableModal from '$lib/components/CreateTableModal.svelte';
+	import CreateTableModal from '../Table/CreateTableModal.svelte';
+	import Icon from '@iconify/svelte';
 
 	const modalStore = getModalStore();
 
 	export let data;
-	// const modalComponent: ModalComponent = {
-	// 	ref: CreateTableModal,
-	// 	props: { data }
-	// };
+	const modalComponent: ModalComponent = {
+		ref: CreateTableModal,
+		props: { data }
+	};
 
-	// const modal: ModalSettings = {
-	// 	type: 'component',
-	// 	component: modalComponent
-	// };
+	const modal: ModalSettings = {
+		type: 'component',
+		component: modalComponent
+	};
 	export let tables: MyTables$result['myTables'];
 </script>
 
@@ -36,13 +37,16 @@
 	</slot>
 
 	<hr class="!border-t-4 !border-primary-700 rounded-2xl m-2" />
-	<div class="flex flex-col space-y-3 mb-2">
+	<div class="flex flex-col space-y-3 mb-2 align-middle justify-center items-center">
 		{#each tables as table}
 			<TableLink {table} />
 		{/each}
-		<!-- <button class="flex align-middle justify-center" on:click={() => modalStore.trigger(modal)}>
-			<img src="/icons/create_table.svg" alt="" class="rounded-none h-13 w-13" />
-		</button> -->
+		<button
+			class="flex align-middle justify-center btn-icon"
+			on:click={() => modalStore.trigger(modal)}
+		>
+			<Icon icon="material-symbols:add-circle-outline-rounded" width="40" height="40" />
+		</button>
 		<div class="card p-4 w-72 shadow-xl" data-popup="popupFeatured">
 			<div><p>Demo Content</p></div>
 			<div class="arrow bg-surface-100-800-token" />
@@ -64,4 +68,5 @@
 	</svelte:fragment>
 </AppRail>
 
-<style></style>
+<style>
+</style>

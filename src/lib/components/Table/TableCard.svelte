@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let id: string | undefined = undefined;
 	export let title: string;
-	export let img: string | null;
+	export let img: string | null | undefined;
 </script>
 
 <a
