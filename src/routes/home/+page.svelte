@@ -1,12 +1,12 @@
 <script lang="ts">
 	import TableCard from '$lib/components/Table/TableCard.svelte';
+	import Icon from '@iconify/svelte';
 
 	export let data;
-    
 
-    // First Table
-    const bestTable = data.myTables[0];
-    let tables = data.myTables;
+	// First Table
+	const bestTable = data.myTables[0];
+	let tables = data.myTables;
 </script>
 
 {#if bestTable}
@@ -27,11 +27,11 @@
 					id voluptate irure deserunt ut.
 				</p>
 				<div class="rating p-10 flex justify-end">
-					<img class="h-10 w-10" src="/icons/compass.svg" alt="" srcset="" />
-					<img class="h-10 w-10" src="/icons/compass.svg" alt="" srcset="" />
-					<img class="h-10 w-10" src="/icons/compass.svg" alt="" srcset="" />
-					<img class="h-10 w-10" src="/icons/compass.svg" alt="" srcset="" />
-					<img class="h-10 w-10" src="/icons/compass.svg" alt="" srcset="" />
+					<Icon icon="material-symbols:star-rate-rounded" width="40" height="40" />
+					<Icon icon="material-symbols:star-rate-rounded" width="40" height="40" />
+					<Icon icon="material-symbols:star-rate-rounded" width="40" height="40" />
+					<Icon icon="material-symbols:star-rate-rounded" width="40" height="40" />
+					<Icon icon="material-symbols:star-half-rounded" width="40" height="40" />
 				</div>
 			</div>
 		</a>
