@@ -2,12 +2,12 @@
 
 /** @type {import('houdini').ConfigFile} */
 const config = {
-    "watchSchema": {
-        "url": "http://localhost:3050/graphql"
-    },
-    "plugins": {
-        "houdini-svelte": {}
-    }
-}
+	watchSchema: {
+		url: 'env:API_ENDPOINT' + '/graphql'
+	},
+	plugins: {
+		'houdini-svelte': {}
+	}
+};
 
-export default config
+export default config;
