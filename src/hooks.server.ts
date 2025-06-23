@@ -4,7 +4,6 @@
 import { AuthProvider } from '$lib/providers/auth';
 
 export async function handleFetch({ fetch, request, event }) {
-	fetch;
 	const authProvider = new AuthProvider(event);
 	const res = authProvider.handleFetchPossibleTokenExpiration(fetch, request);
 	// const res = fetch(request);

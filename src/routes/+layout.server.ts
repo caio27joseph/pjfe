@@ -1,16 +1,17 @@
-import { createTableSchema, type CreateTableForm } from '$lib/providers/table.js';
-import UserProvider from '$lib/providers/user';
-import { superValidate } from 'sveltekit-superforms/client';
+import { fetchMyGuilds } from '../lib/use_cases/fetch_my_guilds.js';
 
 export async function load(event) {
-	const provider = new UserProvider(event);
-
-	const myTables = await provider.fetchOwnTables();
-
-	const createTableForm: CreateTableForm = await superValidate(createTableSchema);
-
+	const accessToken = event.cookies.get('access_token');
+	if (!accessToken) {
+		return {
+			myTables: [],
+			authenticated: false
+		};
+	}
+	const myTables = await fetchMyGuilds(event);
 	return {
 		myTables,
-		createTableForm
+		authenticated: true
 	};
 }
+6;

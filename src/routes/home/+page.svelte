@@ -15,9 +15,9 @@
 		class="container h-[80vh] bg-center bg-cover w-full max-w-full flex flex-col justify-evenly"
 		style="background-image: url({bestTable?.imageUrl ?? '/images/table_placeholder.jpg'});"
 	>
-		<a class="cols grid grid-cols-2" href="/tables/{bestTable.id}">
+		<a class="cols grid grid-cols-2" href="/tables/{bestTable._id}">
 			<div class="grow table-info p-8 text-white variant-glass-surface rounded-sm max-w-0.5">
-				<h2 class="text-3xl font-bold mb-4">{bestTable.title}</h2>
+				<h2 class="text-3xl font-bold mb-4">{bestTable.name}</h2>
 				<p>
 					Aliquip consectetur irure anim laborum officia ea ut sunt excepteur ad consectetur
 					eiusmod. Nostrud occaecat occaecat consectetur incididunt ipsum occaecat est. Exercitation
@@ -45,7 +45,7 @@
 			<ul class="flex flex-row space-x-4 overflow-x-scroll pb-5 h-full">
 				{#each tables as table}
 					<li class="w-64 shrink-0">
-						<TableCard id={table.id.toString()} title={table.title} img={table.imageUrl} />
+						<TableCard id={table._id.toString()} title={table.name} img={table.imageUrl} />
 					</li>
 				{/each}
 			</ul>

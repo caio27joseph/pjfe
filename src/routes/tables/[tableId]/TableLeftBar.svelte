@@ -4,25 +4,26 @@
 	import TableLeftBar from './TableLeftBar.svelte';
 	import { writable } from 'svelte/store';
 	import Library from '$lib/components/TableLibrary/Library.svelte';
+	import { Guild } from '../../../lib/models/guild';
+	import { Resource } from '../../../lib/models/resource';
+	import { ILibrary } from '../../../lib/components/TableLibrary/types';
 
-	export let table = {
-		id: '1',
-		title: 'Mesa 1',
-		imageUrl: '/images/table_placeholder.jpg'
-	};
-	export let libraries = [
+	export let table: Guild;
+	export let resources: Resource[];
+	const libraries: ILibrary[] = [
 		{
 			id: '1',
-			name: 'Biblioteca 1',
-			articles: [
-				{
-					id: '1',
-					title: 'Artigo 1'
-				}
-			]
+			name: 'Recursos',
+			root: resources.map((resource) => ({
+				id: resource._id,
+				name: resource.title,
+				articles: resource.documents?.map((document) => ({
+					id: document._id,
+					name: document.title
+				}))
+			}))
 		}
 	];
-
 	let selectedLibraryId = writable<string | undefined>(libraries?.[0]?.id);
 
 	const tableLeftBarRoutes = ['/tables/[tableId]', '/tables/[tableId]/articles/[articleId]'];
@@ -33,11 +34,11 @@
 		<div>
 			<a
 				class="table-info flex font-bold py-0 !h-44"
-				href="/tables/{table.id}/menu"
+				href="/tables/{table._id}/menu"
 				style="background-image: url({table?.imageUrl || '/images/table_placeholder.jpg'});"
 			>
 				<h1 class="text-2xl text-primary-100 p-3 pt-10 w-full bg-gradient-to-t from-black">
-					{table.title}
+					{table.name}
 				</h1>
 			</a>
 			<div class="library-hub pt-6 pb-2 px-2">

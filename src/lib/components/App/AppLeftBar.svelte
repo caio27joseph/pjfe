@@ -10,9 +10,9 @@
 	import TableLink from '$lib/components/App/TableLink.svelte';
 
 	import { getModalStore } from '@skeletonlabs/skeleton';
-	import type { MyTables$result } from '$houdini';
 	import CreateTableModal from '../Table/CreateTableModal.svelte';
 	import Icon from '@iconify/svelte';
+	import { Guild } from '../../models/guild';
 
 	const modalStore = getModalStore();
 
@@ -26,7 +26,7 @@
 		type: 'component',
 		component: modalComponent
 	};
-	export let tables: MyTables$result['myTables'];
+	export let tables: Guild[];
 </script>
 
 <AppRail active="bg-none" hover="bg-none" gap="p-2 space-y-2">

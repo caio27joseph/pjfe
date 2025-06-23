@@ -9,27 +9,19 @@
 	// import { NavBarController, activeTab } from '$lib/table/NavBarController';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { Dir, IArticle } from './types';
-	interface Table {
-		id: string;
-		name: string;
-	}
-	interface Library {
-		id: string;
-		name: string;
-		root?: Dir[];
-		articles?: IArticle[];
-	}
+	import type { Dir, IArticle, ILibrary } from './types';
+	import { Guild } from '../../models/guild';
 
-	export let table: Table;
-	export let library: Library;
+	export let table: Guild;
+	export let library: ILibrary;
 
 	// export let table: TableInfo$result['findTable'];
 	// export let library: TableInfo$result['tableLibraries'][1];
 	export let hidden: boolean = false;
 
-	const makeRoot = (library: Library) => {
+	const makeRoot = (library: ILibrary) => {
 		const dirByParent = groupBy(library.root ?? [], 'parentId');
+
 		const makeTree = (
 			dir: Dir | { id: string; name: string; parentId: string; directories?: Dir[] }
 		) => {
@@ -38,7 +30,7 @@
 				makeTree(child);
 			}
 		};
-		const rootDirs = dirByParent['null'] || [];
+		const rootDirs = dirByParent?.['null'] ?? dirByParent?.['undefined'] ?? [];
 		for (const dir of rootDirs) {
 			makeTree(dir);
 		}

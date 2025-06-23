@@ -18,7 +18,9 @@
 <AppShell class="app">
 	<!-- Page Route Content -->
 	<svelte:fragment slot="sidebarLeft">
-		<AppLeftBar {data} tables={data.myTables} />
+		{#if data.authenticated}
+			<AppLeftBar {data} tables={data.myTables} />
+		{/if}
 	</svelte:fragment>
 	<div class="scrollable-content">
 		<slot />

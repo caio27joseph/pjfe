@@ -10,3 +10,10 @@ export type Dir = {
 	directories?: Dir[];
 	articles?: IArticle[];
 };
+
+export interface ILibrary {
+	id: string;
+	name: string;
+	root?: Dir[];
+	articles?: IArticle[];
+}

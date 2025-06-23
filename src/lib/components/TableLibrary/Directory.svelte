@@ -4,13 +4,10 @@
 	// import Icon from '@iconify/svelte';
 	import DirActions from './DirActions.svelte';
 	import type { Dir, IArticle } from './types';
+	import { Guild } from '../../models/guild';
 	// import type { TableInfo$result } from '$houdini';
 	// import type { Dir } from '$lib/types';
 
-	type Table = {
-		id: string;
-		name: string;
-	};
 	type Library = {
 		id: string;
 		name: string;
@@ -23,7 +20,7 @@
 
 	// export let directory: Dir;
 	export let editMode: boolean = true;
-	export let table: Table;
+	export let table: Guild;
 	export let library: Library;
 	export let directory: Dir;
 
@@ -51,9 +48,9 @@
 		{#each directories as directory}
 			<svelte:self {directory} {table} {library} />
 		{/each}
-		<!-- {#each articles as article}
+		{#each articles as article}
 			<TreeViewItem>{article.name}</TreeViewItem>
-		{/each} -->
+		{/each}
 	</svelte:fragment>
 </TreeViewItem>
 

@@ -1,5 +1,4 @@
 import { API_ENDPOINT } from '$env/static/private';
-import { setSession } from '$houdini';
 import { redirect, type RequestEvent, type MaybePromise, type ResolveOptions } from '@sveltejs/kit';
 
 const authRoutes = [
@@ -43,17 +42,17 @@ export class AuthProvider {
 	}
 
 	async signIn(email: string, password: string) {
-		const response = await this.event.fetch(API_ENDPOINT + '/auth/login', {
+		const url = API_ENDPOINT + '/auth/login';
+		const response = await this.event.fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
 		});
 
-		const data = await response.json();
-
 		if (!response.ok) {
 			throw Error('Invalid email or password');
 		} else {
+			const data = await response.json();
 			const { access_token, refresh_token } = data;
 			if (!access_token) {
 				throw new Error('No access token');
@@ -65,7 +64,8 @@ export class AuthProvider {
 	}
 
 	async signUp(email: string, password: string) {
-		const response = await this.event.fetch(API_ENDPOINT + '/auth/register', {
+		const url = API_ENDPOINT + '/auth/register';
+		const response = await this.event.fetch(url, {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ email, password })
@@ -145,9 +145,6 @@ export class AuthProvider {
 		const path = event.url.pathname;
 
 		if (authenticated) {
-			setSession(this.event, {
-				access_token: this.access_token as string
-			});
 			if (authRoutes.includes(path)) {
 				console.debug(`from ${path},redirecting to home because user is authenticated`);
 				throw redirect(302, '/home');

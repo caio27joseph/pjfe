@@ -2,29 +2,13 @@
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import TableLeftBar from './TableLeftBar.svelte';
 
-	export let table = {
-		id: '1',
-		title: 'Mesa 1',
-		imageUrl: '/images/table_placeholder.jpg'
-	};
-	export let libraries = [
-		{
-			id: '1',
-			name: 'Biblioteca 1',
-			articles: [
-				{
-					id: '1',
-					title: 'Artigo 1'
-				}
-			]
-		}
-	];
+	export let data;
 </script>
 
 <AppShell>
 	<svelte:fragment slot="sidebarLeft">
-		{#if table}
-			<TableLeftBar {table} {libraries} />
+		{#if data.table}
+			<TableLeftBar table={data.table} resources={data.resources} />
 		{/if}
 	</svelte:fragment>
 
