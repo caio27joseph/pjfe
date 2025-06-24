@@ -51,8 +51,6 @@
 
 	$: isLeftBarVisible = tableLeftBarRoutes.includes($page.route.id ?? '');
 
-	let selectedLibrary = $state(libraries?.[0]?.id);
-
 	// --- FIX START ---
 	// Create a new reactive variable that holds the entire selected library object.
 	// This will automatically update whenever `selectedLibraryId` changes.
