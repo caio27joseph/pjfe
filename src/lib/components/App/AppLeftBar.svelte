@@ -12,7 +12,7 @@
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import CreateTableModal from '../Table/CreateTableModal.svelte';
 	import Icon from '@iconify/svelte';
-	import { Guild } from '../../models/guild';
+	import { type Guild } from '../../models/guild';
 
 	const modalStore = getModalStore();
 

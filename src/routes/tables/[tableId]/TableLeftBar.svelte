@@ -3,10 +3,9 @@
 	import { groupBy } from 'lodash-es';
 	import Icon from '@iconify/svelte';
 
-	import Library from '$lib/components/TableLibrary/Library.svelte';
-	import type { ILibrary } from '../../../lib/components/TableLibrary/types';
 	import type { Guild } from '../../../lib/models/guild';
-	import { Resource, ResourceType } from '../../../lib/models/resource';
+	import { type Resource, ResourceType } from '../../../lib/models/resource';
+	import { writable } from 'svelte/store';
 
 	export let table: Guild;
 	export let resources: Resource[];
@@ -15,33 +14,43 @@
 	const defaultTypes = ['undefined', 'null', 'documentation'];
 	const defaultResources = defaultTypes.flatMap((type) => resourcesByType[type] ?? []);
 
-	const libraries: ILibrary[] = [
+	const libraries: {
+		id: string;
+		name: string;
+		resources: {
+			id: string;
+			name: string;
+			documents: {
+				id: string;
+				name: string;
+			}[];
+		}[];
+	}[] = [
 		{
 			id: '1',
 			name: 'Recursos',
-			root: defaultResources.map((resource) => ({
+			resources: defaultResources.map((resource) => ({
 				id: resource._id,
 				name: resource.title,
-				parentId: '1',
-				articles: resource.documents?.map((document) => ({
-					id: document._id,
-					name: document.title
-				}))
+				documents:
+					resource.documents?.map((document) => ({
+						id: document._id,
+						name: document.title
+					})) ?? []
 			}))
 		},
 		{
 			id: '2',
 			name: 'Ficha',
-			root:
-				resourcesByType[ResourceType.FIELD]?.map((resource) => ({
-					id: resource._id,
-					name: resource.title,
-					parentId: '2',
-					articles: resource.documents?.map((document) => ({
+			resources: resourcesByType[ResourceType.FIELD]?.map((resource) => ({
+				id: resource._id,
+				name: resource.title,
+				documents:
+					resource.documents?.map((document) => ({
 						id: document._id,
 						name: document.title
-					}))
-				})) ?? []
+					})) ?? []
+			}))
 		}
 	];
 
@@ -51,18 +60,23 @@
 
 	$: isLeftBarVisible = tableLeftBarRoutes.includes($page.route.id ?? '');
 
-	// --- FIX START ---
-	// Create a new reactive variable that holds the entire selected library object.
-	// This will automatically update whenever `selectedLibraryId` changes.
-	$: selectedLibrary = libraries.find((l) => l.id === selectedLibraryId);
-	// --- FIX END ---
+	const openResources = writable<Record<string, boolean>>({});
+
+	function toggleResource(id: string) {
+		openResources.update((current) => {
+			return {
+				...current,
+				[id]: !current[id]
+			};
+		});
+	}
+
+	function createDocumentPopup() {
+		// TODO
+	}
 </script>
 
 <div class="container h-screen w-[300px] overflow-auto bg-surface-600">
-	Selected ID: {selectedLibraryId}
-	<br />
-	Selected Name: {selectedLibrary?.name}
-
 	{#if isLeftBarVisible}
 		<div>
 			<a
@@ -80,7 +94,7 @@
 					{#each libraries as library (library.id)}
 						<button
 							type="button"
-							on:click={(e) => console.log('changing', e)}
+							on:click={() => (selectedLibraryId = library.id)}
 							class="hub-button flex px-4 py-2 items-center rounded-md text-left"
 							class:active={selectedLibraryId === library.id}
 						>
@@ -90,15 +104,47 @@
 								height="28"
 								class="text-tertiary-500"
 							/>
-							<h2 class="ml-1 text-base">{library.id} {library.name}</h2>
+							<h2 class="ml-1 text-base">{library.name}</h2>
 						</button>
 					{/each}
 				</div>
 			</div>
-
-			{#if selectedLibrary}
-				<Library {table} library={selectedLibrary} />
-			{/if}
+			{#each libraries as library (library.id)}
+				{#if library.id === selectedLibraryId}
+					{#each library.resources as resource}
+						<div class="grid grid-cols-[1fr_auto]">
+							<button
+								on:click={() => toggleResource(resource.id)}
+								class="flex px-2 py-2 items-center rounded-md text-left gap-2"
+							>
+								<Icon
+									icon="material-symbols:arrow-forward-ios-rounded"
+									width="15"
+									height="21"
+									style={$openResources[resource.id] ? 'transform: rotate(90deg);' : ''}
+								/>
+								{resource.name}
+							</button>
+							<div class="actions flex items-center gap-2 pr-1">
+								<!-- #region Add Document -->
+								<button type="button" class="p-1 rounded-full hover:bg-gray-700">
+									<Icon icon="material-symbols:add-2-rounded" width="16" height="16" />
+								</button>
+							</div>
+						</div>
+						{#if $openResources[resource.id]}
+							<div class="pl-8">
+								{#each resource.documents as document}
+									<a
+										href={`/tables/${table._id}/articles/${document.id}`}
+										class="flex py-1 items-center gap-2">-- {document.name}</a
+									>
+								{/each}
+							</div>
+						{/if}
+					{/each}
+				{/if}
+			{/each}
 		</div>
 	{/if}
 </div>

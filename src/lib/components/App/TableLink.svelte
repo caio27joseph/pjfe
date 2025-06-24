@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import type { TableInfo$result } from '$houdini';
 	import { getInitials } from '$lib/utils';
 	import { AppRailAnchor, Avatar } from '@skeletonlabs/skeleton';
-	import { Guild } from '../../models/guild';
+	import { type Guild } from '../../models/guild';
 
 	export let table: Guild;
 	const path = table._id ? `/tables/${table._id}` : '/';
