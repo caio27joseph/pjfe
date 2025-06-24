@@ -8,3 +8,8 @@ export interface Resource {
 	documents?: Document[]; // Replace with a more specific type if you have one
 	__v?: number;
 }
+
+export enum ResourceType {
+	DOCUMENTATION = 'DOCUMENTATION',
+	FIELD = 'FIELD'
+}

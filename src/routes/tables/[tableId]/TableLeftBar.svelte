@@ -1,36 +1,71 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
-	import TableLeftBar from './TableLeftBar.svelte';
-	import { writable } from 'svelte/store';
+	import { groupBy } from 'lodash-es';
+	import Icon from '@iconify/svelte';
+
 	import Library from '$lib/components/TableLibrary/Library.svelte';
-	import { Guild } from '../../../lib/models/guild';
-	import { Resource } from '../../../lib/models/resource';
-	import { ILibrary } from '../../../lib/components/TableLibrary/types';
+	import type { ILibrary } from '../../../lib/components/TableLibrary/types';
+	import type { Guild } from '../../../lib/models/guild';
+	import { Resource, ResourceType } from '../../../lib/models/resource';
 
 	export let table: Guild;
 	export let resources: Resource[];
+
+	const resourcesByType = groupBy(resources, 'type');
+	const defaultTypes = ['undefined', 'null', 'documentation'];
+	const defaultResources = defaultTypes.flatMap((type) => resourcesByType[type] ?? []);
+
 	const libraries: ILibrary[] = [
 		{
 			id: '1',
 			name: 'Recursos',
-			root: resources.map((resource) => ({
+			root: defaultResources.map((resource) => ({
 				id: resource._id,
 				name: resource.title,
+				parentId: '1',
 				articles: resource.documents?.map((document) => ({
 					id: document._id,
 					name: document.title
 				}))
 			}))
+		},
+		{
+			id: '2',
+			name: 'Ficha',
+			root:
+				resourcesByType[ResourceType.FIELD]?.map((resource) => ({
+					id: resource._id,
+					name: resource.title,
+					parentId: '2',
+					articles: resource.documents?.map((document) => ({
+						id: document._id,
+						name: document.title
+					}))
+				})) ?? []
 		}
 	];
-	let selectedLibraryId = writable<string | undefined>(libraries?.[0]?.id);
+
+	let selectedLibraryId = libraries?.[0]?.id;
 
 	const tableLeftBarRoutes = ['/tables/[tableId]', '/tables/[tableId]/articles/[articleId]'];
+
+	$: isLeftBarVisible = tableLeftBarRoutes.includes($page.route.id ?? '');
+
+	let selectedLibrary = $state(libraries?.[0]?.id);
+
+	// --- FIX START ---
+	// Create a new reactive variable that holds the entire selected library object.
+	// This will automatically update whenever `selectedLibraryId` changes.
+	$: selectedLibrary = libraries.find((l) => l.id === selectedLibraryId);
+	// --- FIX END ---
 </script>
 
 <div class="container h-screen w-[300px] overflow-auto bg-surface-600">
-	{#if tableLeftBarRoutes.includes($page.route.id ?? '')}
+	Selected ID: {selectedLibraryId}
+	<br />
+	Selected Name: {selectedLibrary?.name}
+
+	{#if isLeftBarVisible}
 		<div>
 			<a
 				class="table-info flex font-bold py-0 !h-44"
@@ -43,42 +78,35 @@
 			</a>
 			<div class="library-hub pt-6 pb-2 px-2">
 				<h1 class="text-primary-500 px-4 text-base">Bibliotecas</h1>
-				<div class="hub-options pt-4">
-					<ListBox>
-						{#each libraries as library, i (library.id)}
-							<ListBoxItem
-								padding="0"
-								bind:group={$selectedLibraryId}
-								name={library.name}
-								value={library.id}
-								active="bg-surface-900"
-							>
-								<div class="flex px-4 py-2 items-center">
-									<!-- <Icon
-										icon="material-symbols:menu-book-outline-rounded"
-										width="20"
-										height="28"
-										class="text-tertiary-500"
-									/> -->
-									<h2 class="ml-1 text-base">{library.name}</h2>
-								</div>
-							</ListBoxItem>
-						{/each}
-					</ListBox>
+				<div class="hub-options pt-4 flex flex-col space-y-1">
+					{#each libraries as library (library.id)}
+						<button
+							type="button"
+							on:click={(e) => console.log('changing', e)}
+							class="hub-button flex px-4 py-2 items-center rounded-md text-left"
+							class:active={selectedLibraryId === library.id}
+						>
+							<Icon
+								icon="material-symbols:menu-book-outline-rounded"
+								width="20"
+								height="28"
+								class="text-tertiary-500"
+							/>
+							<h2 class="ml-1 text-base">{library.id} {library.name}</h2>
+						</button>
+					{/each}
 				</div>
 			</div>
-			{#each libraries as library}
-				<Library {table} {library} hidden={library.id !== $selectedLibraryId} />
-			{/each}
+
+			{#if selectedLibrary}
+				<Library {table} library={selectedLibrary} />
+			{/if}
 		</div>
-	{:else if $page.route.id === '/tables/[tableId]/menu'}
-		<!-- <TableMenuBar /> -->
-	{:else}
-		...
 	{/if}
 </div>
 
 <style>
+	/* Styles remain the same */
 	.table-info {
 		background-repeat: no-repeat;
 		background-size: cover;
@@ -88,5 +116,18 @@
 	}
 	.library-hub {
 		border-bottom: 0.1px solid #ffffff40;
+	}
+
+	.hub-button {
+		transition: background-color 0.2s ease-in-out;
+	}
+
+	.hub-button:hover {
+		background-color: #ffffff1a; /* Example hover effect */
+	}
+
+	.hub-button.active {
+		background-color: #373737; /* Equivalent to your bg-surface-900 */
+		font-weight: bold;
 	}
 </style>
